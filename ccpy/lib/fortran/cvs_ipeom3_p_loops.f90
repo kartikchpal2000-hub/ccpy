@@ -3698,4 +3698,4 @@ module cvs_ipeom3_p_loops
 
               end subroutine argsort
 
-end module ipeom3_p_loops
+end module cvs_ipeom3_p_loops
