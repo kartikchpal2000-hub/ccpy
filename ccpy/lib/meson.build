@@ -145,6 +145,7 @@ fortran_sources = [
   'fortran/ipccp3_loops.f90',
   'fortran/ipeom3_p_intermediates.f90',
   'fortran/ipeom3_p_loops.f90',
+  'fortran/cvs_ipeom3_p_loops.f90',
   'fortran/ipeomt_p_loops.f90',
   'fortran/leftccsdt_p_intermediates.f90',
   'fortran/leftccsdt_p_loops.f90',
