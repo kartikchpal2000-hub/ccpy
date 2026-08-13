@@ -65,7 +65,7 @@ class Driver:
                     *load_fcidump_integrals(fcidump, nfrozen, charge=charge, rohf_canonicalization=rohf_canonicalization, normal_ordered=normal_ordered, sorted=sorted, data_type=data_type)
                    )
 
-    def __init__(self, system, hamiltonian, max_number_states=50):
+    def __init__(self, system, hamiltonian, max_number_states=1000):
         """
         Parameters
         ----------
@@ -80,16 +80,16 @@ class Driver:
         self.hamiltonian = hamiltonian
         self.flag_hbar = False
         self.options = {"method": None,
-                        "maximum_iterations": 80,
-                        "amp_convergence": 1.0e-07,
-                        "energy_convergence": 1.0e-07,
+                        "maximum_iterations": 500,
+                        "amp_convergence": 1.0e-7,
+                        "energy_convergence": 1.0e-7,
                         "energy_shift": 0.0,
-                        "diis_size": 6,
+                        "diis_size": 3,
                         "RHF_symmetry": (self.system.noccupied_alpha == self.system.noccupied_beta),
                         "diis_out_of_core": False,
                         "davidson_out_of_core": False,
                         "amp_print_threshold": 0.09,
-                        "davidson_max_subspace_size": 30,
+                        "davidson_max_subspace_size": 60,
                         "davidson_solver": "standard",
                         "davidson_selection_method": "overlap"}
 
@@ -165,15 +165,15 @@ class Driver:
             self.operator_params["number_particles"] = 3
             self.operator_params["number_holes"] = 3
             self.operator_params["pspace_orders"] = [3]
-        elif method.lower() in ["ipeom2", "left_ipeom2"]:
+        elif method.lower() in ["ipeom2", "cvs_ipeom2", "left_ipeom2"]:
             self.order = 2
             self.num_particles = 1
             self.num_holes = 2
-        elif method.lower() in ["ipeom3", "left_ipeom3", "ipeomccsdta", "ipeomccsdt"]:
+        elif method.lower() in ["ipeom3", "cvs_ipeom3", "left_ipeom3", "ipeomccsdta", "ipeomccsdt", "cvs_ipeomccsdt"]:
             self.order = 3
             self.num_particles = 2
             self.num_holes = 3
-        elif method.lower() in ["ipeom3_p", "left_ipeom3_p", "ipeomccsdt_p"]:
+        elif method.lower() in ["ipeom3_p", "left_ipeom3_p", "ipeomccsdt_p", "cvs_ipeom3_p"]:
             self.operator_params["order"] = 3
             self.operator_params["number_particles"] = 2
             self.operator_params["number_holes"] = 3
