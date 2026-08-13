@@ -4,7 +4,7 @@ import numpy as np
 from ccpy.eomcc.ipeom3_intermediates import get_ipeom3_intermediates
 from concurrent.futures import ThreadPoolExecutor
 from ccpy.lib.core import cc_loops2
-
+import copy
 # R.a -> (noa) -> (i)
 # R.aa -> (noa,nua,noa) -> (ibj)
 # R.ab -> (noa,nub,nob) -> (ib~j~)
@@ -31,17 +31,63 @@ def update(R, omega, H, RHF_symmetry, system):
     return R
 
 def HR(dR, R, T, H, flag_RHF, system):
+    core = 1
+    V = copy.deepcopy(R)
+    for i in range(np.shape(V.a)[0]):
+        if i == core:
+            continue
+        else:
+            V.a[i] = 0
+            V.ab[i,:,:] = 0
+            V.abb[i,:,:,:,:] = 0
+    for i in range(np.shape(V.aa)[0]):
+        for j in range(np.shape(V.aa)[2]):
+            if i == core or j == core:
+                continue
+            else:
+                V.aa[i, :, j] = 0
+                V.aab[i, :, :, j, :] = 0
+    for i in range(np.shape(V.aaa)[0]):
+        for j in range(np.shape(V.aaa)[0]):
+            for k in range(np.shape(V.aaa)[0]):
+                if i == core or j == core or k == core:
+                    continue
+                else:
+                    V.aaa[i, :, :, j, k] = 0.0
+
     # Get intermediates
-    X = get_ipeom3_intermediates(H, R)
+    X = get_ipeom3_intermediates(H, V)
     # update R1
-    dR.a = build_HR_1A(R, T, H)
+    dR.a = build_HR_1A(V, T, H)
     # update R2
-    dR.aa = build_HR_2A(R, T, H)
-    dR.ab = build_HR_2B(R, T, H)
+    dR.aa = build_HR_2A(V, T, H)
+    dR.ab = build_HR_2B(V, T, H)
     # update R3
-    dR.aaa = build_HR_3A(R, T, X, H)
-    dR.aab = build_HR_3B(R, T, X, H)
-    dR.abb = build_HR_3C(R, T, X, H)
+    dR.aaa = build_HR_3A(V, T, X, H)
+    dR.aab = build_HR_3B(V, T, X, H)
+    dR.abb = build_HR_3C(V, T, X, H)
+    for i in range(np.shape(dR.a)[0]):
+        if i == core:
+             continue
+        else:
+             dR.a[i] = 0
+             dR.ab[i,:,:]=0.0
+             dR.abb[i,:,:,:,:]=0.0
+    for i in range(np.shape(dR.aa)[0]):
+        for j in range(np.shape(dR.aa)[2]):
+            if i == core or j == core:
+                continue
+            else:
+                dR.aa[i, :, j] = 0
+                dR.aab[i, :, :, j, :] = 0
+    for i in range(np.shape(dR.aaa)[0]):
+        for j in range(np.shape(dR.aaa)[0]):
+            for k in range(np.shape(dR.aaa)[0]):
+                if i == core or j == core or k == core:
+                    continue
+                else:
+                    dR.aaa[i, :, :, j, k] = 0.0
+
     return dR.flatten()
 
 def build_HR_1A(R, T, H):

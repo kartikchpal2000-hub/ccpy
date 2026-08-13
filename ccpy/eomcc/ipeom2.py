@@ -42,12 +42,12 @@ def build_HR_1A(R, T, H):
 
 def build_HR_2A(R, T, H):
     """Calculate the projection <ijb|[ (H_N e^(T1+T2))_C*(R1h+R2h1p) ]_C|0>."""
-    X2A = -0.5 * np.einsum("bmji,m->ibj", H.aa.vooo, R.a, optimize=True)
+    X2A = - 0.5 * np.einsum("bmji,m->ibj", H.aa.vooo, R.a, optimize=True)
     X2A += 0.5 * np.einsum("be,iej->ibj", H.a.vv, R.aa, optimize=True)
     X2A += 0.25 * np.einsum("mnij,mbn->ibj", H.aa.oooo, R.aa, optimize=True)
     I1 = (
-        -0.5 * np.einsum("mnef,mfn->e", H.aa.oovv, R.aa, optimize=True)
-        - np.einsum("mnef,mfn->e", H.ab.oovv, R.ab, optimize=True)
+        - 0.5 * np.einsum("mnef,mfn->e", H.aa.oovv, R.aa, optimize=True)
+        -  np.einsum("mnef,mfn->e", H.ab.oovv, R.ab, optimize=True)
     )
     X2A += 0.5 * np.einsum("e,ebij->ibj", I1, T.aa, optimize=True)
     X2A -= np.einsum("mi,mbj->ibj", H.a.oo, R.aa, optimize=True)
