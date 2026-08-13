@@ -25,6 +25,7 @@ MODULES := cc_loops \
 		   eaeom3_p_loops \
 		   eaeom3_p_intermediates \
 		   ipeom3_p_loops \
+		   cvs_ipeom3_p_loops \
 		   ipeom3_p_intermediates \
 		   lefteaeom3_p_loops \
 		   lefteaeom3_p_intermediates \
